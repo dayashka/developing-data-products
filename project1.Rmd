@@ -1,0 +1,67 @@
+---
+title: "data_development_project_mtcars Dataset"
+author: "Amena Urooj"
+date: "3 February 2019"
+output:
+  slidy_presentation: default
+  html_document:
+    number_sections: yes
+    toc: yes
+  ioslides_presentation: default
+mode: selfcontained
+job: Reproducible Pitch Presentation
+subtitle: Variables and MPG
+highlighter: highlight.js
+widgets: bootstrap
+---
+
+## Coursera Reproducible Pitch
+ "First, you will create a Shiny application and deploy it on Rstudio's servers.Second, you will use Slidify or Rstudio Presenter to prepare a reproducible pitch presentation about your application."
+---
+## mtcars Dataset
+### Motor Trend Car Road Tests
+
+> The data is extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models).
+### Source
+> Henderson and Velleman (1981), Building multiple regression models interactively. Biometrics, 37, 391-411.
+```{r}
+library(datasets)
+head(mtcars, 3)
+boxplot(mpg ~ am, data = mtcars, main = "Tranmission vs. MPG", xlab = "Transmission(0 = automatic, 1 = manual)", ylab ="MPG")
+```
+---
+## mtcars Dataset - Format
+**A data frame with 32 observations on 11 variables.**
+
+| Index | Field | Detail |
+------- | ----- | ------ |
+| [, 1] | mpg | Miles/(US) gallon |
+| [, 2]  | cyl | Number of cylinders |
+| [, 3]	| disp | Displacement (cu.in.) |
+| [, 4]	| hp | Gross horsepower |
+| [, 5]	| drat | Rear axle ratio |
+| [, 6]	| wt | Weight (lb/1000) |
+| [, 7]	| qsec | 1/4 mile time |
+| [, 8]	| vs | V/S |
+| [, 9]	| am | Transmission (0 = automatic, 1 = manual) |
+| [,10]	| gear | Number of forward gears |
+| [,11]	| carb | Number of carburetors |
+---
+
+## Analysis - Main Code
+  formulaTextPoint <- reactive({
+    paste("mpg ~", "as.integer(", input$variable, ")")  })
+    fit <- reactive({
+    lm(as.formula(formulaTextPoint()), data=mpgData)  })
+  output$fit <- renderPrint({
+    summary(fit()) })
+  
+  output$mpgPlot <- renderPlot({
+    with(mpgData, {
+      plot(as.formula(formulaTextPoint()))
+      abline(fit(), col=2)
+    })  })
+
+We see a relationship between (automatic vs manual) transmission and fuel consumption; manual transmissions yielding higher values of MPG. However, there are relationships between fuel consumption and other variables (cylinders, engine displacement, weight). Transmission seems to be correlated with some of these potential predictors, so an important question is to what extent transmission independently affects fuel economy. We mainly focus on the relationship between variables mpg (Miles/(US) gallon) and am (Transmission). Plot transmission of car v. car's mpg Transmission (0 = automatic, 1 = manual) gives the box plot. 
+The plot shows that there seems to be higher mpg for cars with manual transmission than those with automatic. Box plot shows that there's a good separation of groups based on gas mileage. Detailed Variable analysis There seems to be clear difference in mpg by transmission type, but there is some question as to the normality of the plot. 
+For this reason we will include a nonparametric assessment as well. Since the explanatory variable of interest Transmission is represented as 0 = automatic and 1 = manual i.e it is qualitative in nature. The variable will be revised to better reflect this distinction. A qualitative analysis of mpg vs. transmission as well as its distribution is assessed to determine the best type of model to approach the regression.
